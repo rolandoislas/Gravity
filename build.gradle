@@ -1,0 +1,47 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'org.lwjgl.lwjgl:lwjgl:2.9.1'
+	compile 'org.slick2d:slick2d-core:1.0.1'
+	compile 'io.netty:netty-all:4.0.23.Final'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+mainClassName = 'com.rolandoislas.gravity.Main'
+jar {
+    dependsOn 'extractLibs', 'copyNatives'
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+task copyLibs(type: Copy) {
+    from configurations.compile
+    into 'build/classes/main/libs'
+    exclude { natives -> natives.file.name.endsWith('.dll') || natives.file.name.endsWith('.so') ||
+            natives.file.name.endsWith('.jnilib') || natives.file.name.endsWith('.dylib')}
+}
+
+task extractLibs(type: Copy) {
+    from configurations.compile.collect {
+        it.isDirectory() ? it : zipTree(it)
+    }
+    into 'build/classes/main'
+    exclude { natives -> natives.file.name.endsWith('.dll') || natives.file.name.endsWith('.so') ||
+            natives.file.name.endsWith('.jnilib') || natives.file.name.endsWith('.dylib')}
+}
+
+task copyNatives(type: Copy) {
+    from configurations.compile
+    into 'build/classes/main/natives'
+    include { natives -> natives.getName().endsWith('.jar') && natives.getName().contains("platform") &&
+            natives.getName().contains('natives')}
+}
