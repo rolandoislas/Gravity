@@ -38,6 +38,7 @@ public class OS {
             return Paths.get(homeDir, "AppData", "Roaming", Main.getName()).toFile();
         }
         if(isMac()) {
+			homeDir = Paths.get("/Users", System.getProperty("user.name")).toString();
             return Paths.get(homeDir, "Library", "Application Support", Main.getName()).toFile();
         }
         // Return Linux
