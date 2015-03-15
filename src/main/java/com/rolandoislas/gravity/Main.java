@@ -139,6 +139,10 @@ public class Main extends StateBasedGame {
         // unzip natives
         FileUtil.unZip(new File(nativesPath, nativeFileName), nativesPath);
         FileUtil.unZip(new File(nativesPath, nativeInputFileName), nativesPath);
+		if(os.equals("osx")) {
+			FileUtil.rename(new File(nativesPath, "liblwjgl.jnilib"), new File(nativesPath, "liblwjgl.dylib"), true);
+			FileUtil.rename(new File(nativesPath, "libjinput-osx.jnilib"), new File(nativesPath, "libjinput-osx.dylib"), true);
+		}
     }
 
 }

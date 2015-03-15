@@ -89,4 +89,20 @@ public class FileUtil {
         }
     }
 
+	public static void rename(File oldFile, File newFile) throws IOException {
+		rename(oldFile, newFile, false);
+	}
+
+	public static void rename(File oldFile, File newFile, boolean ignoreExisting) throws IOException {
+		if(newFile.exists()) {
+			if (ignoreExisting)
+				return;
+			throw new IOException("A file with the name " + newFile.getName() + " already exists");
+		}
+		boolean success = oldFile.renameTo(newFile);
+		if(!success)
+			throw new IOException("Could note rename file: " + oldFile.getName() + " to " + newFile.getName() +
+					" in path " + oldFile.getParent());
+	}
+
 }
