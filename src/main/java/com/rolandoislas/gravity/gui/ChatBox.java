@@ -118,8 +118,9 @@ public class ChatBox {
     }
 
     public void addMessage() {
-        if(queuedMessages.size() > 0) {
-            for(String message : queuedMessages) {
+		List<String> queueCopy = new ArrayList<>(queuedMessages);
+        if(queueCopy.size() > 0) {
+            for(String message : queueCopy) {
                 Label label = new Label(message);
                 int messageNumber = messages.size();
                 int x = (int) box.getX() + boxXMargin;
