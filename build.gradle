@@ -13,6 +13,12 @@ dependencies {
 	compile 'io.netty:netty-all:4.0.23.Final'
 }
 
+if (project.hasProperty('myVersion')) {
+	project.version = project.myVersion
+} else {
+	project.version = 'dev'
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 mainClassName = 'com.rolandoislas.gravity.Main'
