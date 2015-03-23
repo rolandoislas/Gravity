@@ -51,7 +51,6 @@ public class MultiplayerLobby extends BasicGameState {
     private boolean netFailed = false;
     private boolean gameStart = false;
     private StateBasedGame game;
-    private ActionListener initListener;
 
     public MultiplayerLobby(int id) {
         this.id = id;
@@ -168,9 +167,9 @@ public class MultiplayerLobby extends BasicGameState {
     public void enter(GameContainer container, StateBasedGame game) {
         this.game = game;
         if(host) {
-            startServer(game);
+            startServer();
         }
-        startClient(game);
+        startClient();
     }
 
     private void connectToLobby() {
@@ -187,37 +186,33 @@ public class MultiplayerLobby extends BasicGameState {
         }
     }
 
-    private void startClient(StateBasedGame game) {
+    private void startClient() {
         Runnable client = () -> {
             try {
                 lobbyClient = new LobbyClientInitializer(this, ip, LobbyServerInitializer.port);
                 lobbyClient.run();
             } catch (Exception e) {
                 e.printStackTrace();
-                doFail(game, "Failed to join server.");
+                netFailed = true;
+                doError("Failed to join server.");
             }
         };
         new Thread(client).start();
         connectToLobby();
     }
 
-    private void startServer(StateBasedGame game) {
+    private void startServer() {
         Runnable server = () -> {
             try {
                 lobbyServer = new LobbyServerInitializer();
                 lobbyServer.run();
             } catch (Exception e) {
                 e.printStackTrace();
-                doFail(game, "Failed to create server.");
+                netFailed = true;
+                doError("Failed to create server. Error: " + e.getLocalizedMessage());
             }
         };
         new Thread(server).start();
-    }
-
-    private void doFail(StateBasedGame game, String message) {
-        // TODO Display message with confirmation.
-        netFailed = true;
-        game.enterState(Main.STATE_ID.MAIN_MENU.id);
     }
 
     @Override
@@ -294,7 +289,7 @@ public class MultiplayerLobby extends BasicGameState {
     }
 
 	public void doError(String message, boolean checkHost) {
-        if (checkHost && !host)
+        if ((checkHost && !host) || !checkHost)
 		    ((MainMenu)game.getState(Main.STATE_ID.MAIN_MENU.id)).setError(message);
 		game.enterState(Main.STATE_ID.MAIN_MENU.id);
 	}
