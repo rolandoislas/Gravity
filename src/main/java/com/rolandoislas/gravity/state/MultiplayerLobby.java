@@ -223,6 +223,7 @@ public class MultiplayerLobby extends BasicGameState {
         }
         lobbyClient.stop();
         resetPlayerPanels();
+        netFailed = false;
     }
 
     private void resetPlayerPanels() {
