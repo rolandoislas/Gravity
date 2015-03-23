@@ -26,8 +26,6 @@ public class MainMenu extends BasicGameState {
     private static  StateBasedGame game;
     public static Background background;
     private static Image backgroundImage;
-    private ActionListener initListener;
-	private boolean error;
 	private Popup errorPopup;
 
 	public MainMenu(Integer id) {
@@ -119,12 +117,10 @@ public class MainMenu extends BasicGameState {
 
 	@Override
 	public void enter(GameContainer container, StateBasedGame game) throws SlickException{
-		if (error)
-			errorPopup.show();
 	}
 
 	public void setError(String errorMessage) {
-		this.error = true;
 		errorPopup.setMessage(errorMessage);
+        errorPopup.show();
 	}
 }

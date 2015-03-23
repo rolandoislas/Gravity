@@ -42,6 +42,9 @@ public class LobbyClientPlayerHandler extends ChannelInboundHandlerAdapter {
             case LobbyClientDecoder.CODE_SECRET :
                 setSecret(message);
                 break;
+            case LobbyClientDecoder.CODE_SHUTDOWN :
+                lobby.doError("Host disconnected.", true);
+                break;
             default :
                 ctx.fireChannelRead(NetUtil.stringToByteBuf(message));
                 break;
@@ -92,6 +95,11 @@ public class LobbyClientPlayerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
+		switch (cause.getMessage()) {
+			case "An existing connection was forcibly closed by the remote host" :
+				lobby.doError("Lost connection to host.");
+				break;
+		}
         ctx.close();
     }
 

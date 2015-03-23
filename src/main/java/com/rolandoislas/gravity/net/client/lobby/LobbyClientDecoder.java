@@ -17,6 +17,7 @@ public class LobbyClientDecoder extends ByteToMessageDecoder {
     public static final String CODE_STATE_CHANGE = "04";
     public static final String CODE_GAME_START = "05";
     public static final String CODE_SECRET = "06";
+    public static final String CODE_SHUTDOWN = "07";
 
     private boolean runCheck = true;
     private int bytesOut;

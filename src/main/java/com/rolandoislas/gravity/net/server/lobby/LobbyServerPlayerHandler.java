@@ -88,6 +88,9 @@ public class LobbyServerPlayerHandler extends ChannelInboundHandlerAdapter {
                 updatePlayerStatus(ctx, message);
                 checkGameStart(ctx);
                 break;
+            case LobbyServerDecoder.CODE_SHUTDOWN :
+                sendMessage(LobbyClientDecoder.CODE_SHUTDOWN);
+                break;
             default :
                 ctx.fireChannelRead(NetUtil.stringToByteBuf(message));
                 break;

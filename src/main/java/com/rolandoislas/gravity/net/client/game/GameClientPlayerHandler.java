@@ -43,6 +43,17 @@ public class GameClientPlayerHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		cause.printStackTrace();
+		switch (cause.getMessage()) {
+			case "An existing connection was forcibly closed by the remote host" :
+				ctx.close();
+				game.doError("Lost connection to host.");
+				break;
+		}
+	}
+
 	private void doError(String message) {
 		String errorMessage = null;
 		for (GameClientDecoder.ERROR_CODE errorCode : GameClientDecoder.ERROR_CODE.values()) {

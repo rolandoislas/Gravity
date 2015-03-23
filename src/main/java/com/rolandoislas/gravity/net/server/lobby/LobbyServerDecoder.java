@@ -17,6 +17,7 @@ public class LobbyServerDecoder extends ByteToMessageDecoder {
     public static final String CODE_GAMESTATE = "02";
     public static final String CODE_STATUS_CHANGE = "03";
     public static final String CODE_REQUEST_PLAYERS = "04";
+	public static final String CODE_SHUTDOWN = "05";
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
@@ -50,6 +51,9 @@ public class LobbyServerDecoder extends ByteToMessageDecoder {
                 bytesOut = 4;
                 break;
             case CODE_REQUEST_PLAYERS :
+                bytesOut = 2;
+                break;
+            case CODE_SHUTDOWN :
                 bytesOut = 2;
                 break;
             default :

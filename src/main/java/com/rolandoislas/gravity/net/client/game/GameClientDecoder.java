@@ -89,6 +89,9 @@ public class GameClientDecoder extends ByteToMessageDecoder {
                     checkChatMessageEnd(copy);
                 }
                 break;
+            case CODE_ERROR :
+                bytesOut = 4;
+                break;
             default :
                 bytesOut = in.readableBytes();
                 break;

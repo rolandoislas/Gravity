@@ -1,6 +1,7 @@
 package com.rolandoislas.gravity.net.client.lobby;
 
 import com.rolandoislas.gravity.net.common.NetUtil;
+import com.rolandoislas.gravity.net.server.lobby.LobbyServerDecoder;
 import com.rolandoislas.gravity.state.MultiplayerLobby;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -67,4 +68,8 @@ public class LobbyClientInitializer {
     public void stop() {
         workerGroup.shutdownGracefully();
     }
+
+	public void sendShutdownMessage() {
+		sendMessage(LobbyServerDecoder.CODE_SHUTDOWN);
+	}
 }

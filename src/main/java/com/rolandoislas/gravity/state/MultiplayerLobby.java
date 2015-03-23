@@ -96,7 +96,7 @@ public class MultiplayerLobby extends BasicGameState {
         sidebarPanel = new Rectangle(sidebarPosX, sidebarPosY, sidebarWidth, sidebarHeight);
 
         backButton = new Button("Exit");
-        backButton.addClickAction(e -> game.enterState(Main.STATE_ID.MAIN_MENU.id));
+        backButton.addClickAction(e -> doExit());
         int sidebarButtonWidth = 150;
         backButton.setWidth(sidebarButtonWidth);
         backButton.setShapeColor(backButtonColor, "blur");
@@ -109,7 +109,13 @@ public class MultiplayerLobby extends BasicGameState {
         optionLabel.setPosition(sidebarPosX + ((sidebarWidth - optionLabel.getWidth()) / 2), 5);
     }
 
-    @Override
+	private void doExit() {
+		if (host)
+			lobbyClient.sendShutdownMessage();
+		game.enterState(Main.STATE_ID.MAIN_MENU.id);
+	}
+
+	@Override
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         MainMenu.background.render();
         renderChatbox(g);
@@ -283,4 +289,13 @@ public class MultiplayerLobby extends BasicGameState {
         gameStart = false;
     }
 
+    public void doError(String message) {
+        doError(message, false);
+    }
+
+	public void doError(String message, boolean checkHost) {
+        if (checkHost && !host)
+		    ((MainMenu)game.getState(Main.STATE_ID.MAIN_MENU.id)).setError(message);
+		game.enterState(Main.STATE_ID.MAIN_MENU.id);
+	}
 }
