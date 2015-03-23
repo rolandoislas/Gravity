@@ -23,6 +23,16 @@ public class GameClientDecoder extends ByteToMessageDecoder {
     public static final String CODE_NEUTRAL_SHIP_MOVE = "07";
     public static final String CODE_END_GAME = "08";
     public static final String CODE_CHAT = "09";
+	public static final String CODE_ERROR = "10";
+	public enum ERROR_CODE {
+		DISCONNECTED("01", "A player has disconnected.");
+		public String code;
+		public String message;
+		private ERROR_CODE(String code, String message) {
+			this.code = code;
+			this.message = message;
+		}
+	}
     private boolean runCheck = true;
     private int bytesOut;
 

@@ -159,6 +159,11 @@ public class GameServerPlayerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();
+		switch (cause.getMessage()) {
+			case "An existing connection was forcibly closed by the remote host" :
+				sendMessage(GameClientDecoder.CODE_ERROR + GameClientDecoder.ERROR_CODE.DISCONNECTED.code);
+				break;
+		}
         ctx.close();
     }
 

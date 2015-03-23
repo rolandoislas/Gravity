@@ -324,4 +324,9 @@ public class Game extends BasicGameState {
     public void sendChatMessage(String message) {
         gameClient.sendChatMessage(message);
     }
+
+	public void doError(String errorMessage) {
+		((MainMenu)game.getState(Main.STATE_ID.MAIN_MENU.id)).setError(errorMessage);
+		game.enterState(Main.STATE_ID.MAIN_MENU.id);
+	}
 }

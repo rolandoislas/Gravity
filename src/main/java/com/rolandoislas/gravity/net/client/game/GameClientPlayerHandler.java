@@ -34,13 +34,27 @@ public class GameClientPlayerHandler extends ChannelInboundHandlerAdapter {
             case GameClientDecoder.CODE_STATUS_CHANGE :
                 setStatus(message);
                 break;
+			case GameClientDecoder.CODE_ERROR :
+				doError(message);
+				break;
             default :
                 ctx.fireChannelRead(NetUtil.stringToByteBuf(message));
                 break;
         }
     }
 
-    private void setStatus(String message) {
+	private void doError(String message) {
+		String errorMessage = null;
+		for (GameClientDecoder.ERROR_CODE errorCode : GameClientDecoder.ERROR_CODE.values()) {
+			if (message.substring(2, 4).equals(errorCode.code)) {
+				errorMessage = errorCode.message;
+				break;
+			}
+		}
+		game.doError(errorMessage);
+	}
+
+	private void setStatus(String message) {
         int player = Integer.parseInt(message.substring(2, 4));
         int numberCode = Integer.parseInt(message.substring(4, 6));
         PlayerPanelGame.STATUSCODE code = null;

@@ -3,13 +3,13 @@ package com.rolandoislas.gravity.state;
 import com.rolandoislas.gravity.Main;
 import com.rolandoislas.gravity.gui.Background;
 import com.rolandoislas.gravity.gui.Button;
+import com.rolandoislas.gravity.gui.Popup;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +27,10 @@ public class MainMenu extends BasicGameState {
     public static Background background;
     private static Image backgroundImage;
     private ActionListener initListener;
+	private boolean error;
+	private Popup errorPopup;
 
-    public MainMenu(Integer id) {
+	public MainMenu(Integer id) {
         MainMenu.id = id;
     }
 
@@ -44,9 +46,19 @@ public class MainMenu extends BasicGameState {
         positionButtons();
         setButtonsSize();
         createBackground();
+		createErrorPopup(container);
     }
 
-    private void createBackground() {
+	private void createErrorPopup(GameContainer container) {
+		errorPopup = new Popup(container);
+		errorPopup.hide();
+		Button button = new Button();
+		button.setText("Ok");
+		button.addClickAction(e -> errorPopup.hide());
+		errorPopup.addButton(button);
+	}
+
+	private void createBackground() {
         try {
             backgroundImage = new Image("images/background/black-hole.jpg");
         } catch (SlickException e) {
@@ -88,7 +100,8 @@ public class MainMenu extends BasicGameState {
     public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException {
         renderBackground(g);
         renderButtons(g);
-    }
+		errorPopup.render(g);
+	}
 
     private void renderBackground(Graphics g) {
         background.render();
@@ -104,4 +117,14 @@ public class MainMenu extends BasicGameState {
     public void update(GameContainer container, StateBasedGame game, int delta) throws SlickException {
     }
 
+	@Override
+	public void enter(GameContainer container, StateBasedGame game) throws SlickException{
+		if (error)
+			errorPopup.show();
+	}
+
+	public void setError(String errorMessage) {
+		this.error = true;
+		errorPopup.setMessage(errorMessage);
+	}
 }
