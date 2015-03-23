@@ -301,7 +301,7 @@ public class GameServerLogicHandler extends ChannelInboundHandlerAdapter {
         List<int[]> distances = getShipDistancesFromPoint(playerLocation);
         int player = distances.get(0)[0];
         int playerDistance = distances.get(0)[1];
-        if(playerDistance == playerLocation) {
+        if(playerDistance == 0) {
             player = distances.get(1)[0];
         }
         return (int) players.get(player - 1).get("location");
