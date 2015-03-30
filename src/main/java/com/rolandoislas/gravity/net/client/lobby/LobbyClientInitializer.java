@@ -41,7 +41,6 @@ public class LobbyClientInitializer {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    // TODO add deliminator handler
                     ch.pipeline().addLast(new DelimiterBasedFrameDecoder(50, true, NetUtil.stringToByteBuf("\n")), new LobbyClientDecoder(), new LobbyClientPlayerHandler(lobby));
                 }
             });

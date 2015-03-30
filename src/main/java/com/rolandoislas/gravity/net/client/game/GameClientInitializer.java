@@ -46,7 +46,6 @@ public class GameClientInitializer {
             b.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    // TODO add deliminator handler
                     ch.pipeline().addLast(new DelimiterBasedFrameDecoder(150, true, NetUtil.stringToByteBuf("\n")),
                             new GameClientDecoder(), new GameClientPlayerHandler(game),
                             new GameClientLogicHandler(game), new GameClientChatHandler(game));

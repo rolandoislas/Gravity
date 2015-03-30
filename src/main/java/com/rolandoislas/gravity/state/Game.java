@@ -126,7 +126,8 @@ public class Game extends BasicGameState {
                 gameClient.run();
             } catch (Exception e) {
                 e.printStackTrace();
-                doFail(game, "Failed to join server.");
+                netFailed = true;
+                doError("Failed to join server.");
             }
         };
         new Thread(client).start();
@@ -154,16 +155,11 @@ public class Game extends BasicGameState {
                 gameServer.run();
             } catch (Exception e) {
                 e.printStackTrace();
-                doFail(game, "Failed to create server.");
+                netFailed = true;
+                doError("Failed to create server.");
             }
         };
         new Thread(server).start();
-    }
-
-    private void doFail(StateBasedGame game, String message) {
-        // TODO Display message with confirmation.
-        netFailed = true;
-        game.enterState(Main.STATE_ID.MAIN_MENU.id);
     }
 
     private void createComponents(GameContainer container) {
