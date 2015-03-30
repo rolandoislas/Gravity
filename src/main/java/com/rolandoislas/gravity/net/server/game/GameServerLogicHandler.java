@@ -68,9 +68,21 @@ public class GameServerLogicHandler extends ChannelInboundHandlerAdapter {
         resetPlayerTurns();
         // Check if round has ended
         checkRoundStart();
+        // Victory conditions
+        checkVictoryConditions();
         // Start new turn
         if(!gameOver) {
             sendTurnNotification();
+        }
+    }
+
+    private void checkVictoryConditions() {
+        for (int i = 0; i < totalPlayers; i++) {
+            // Check if player is at end of map
+            if ((int)GameServerPlayerHandler.getPlayers().get(i).get("location") == GameBoard.getTotalLocations()) {
+                doGameEnd();
+                break;
+            }
         }
     }
 
