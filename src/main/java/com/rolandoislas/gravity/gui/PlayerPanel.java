@@ -1,8 +1,15 @@
 package com.rolandoislas.gravity.gui;
 
+import com.rolandoislas.gravity.state.MultiplayerLobby;
+import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
+import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.geom.Rectangle;
+import org.newdawn.slick.gui.TextField;
+import java.awt.Font;
 
 /**
  * @author Rolando Islas
@@ -11,13 +18,14 @@ public class PlayerPanel {
 
     private final int x;
     private final int y;
+    private final GameContainer container;
+    private final MultiplayerLobby lobby;
     private int width;
     private int height;
     private int id;
     private String name = "";
     private Rectangle mainBox;
     private PlayerIcon playerIcon;
-    private Label playerLabel;
     private Rectangle statusIndicator;
     private Color mainBoxColor = new Color(255, 255, 255, 128);
     private Color statusColorReady = Color.green;
@@ -27,8 +35,11 @@ public class PlayerPanel {
     private Label checkboxLabel;
     private boolean activePlayer = false;
     private boolean hasJoined = false;
+    private TextField playerName;
 
-    public PlayerPanel(int x, int y, int width, int height, int id) {
+    public PlayerPanel(MultiplayerLobby lobby, GameContainer container, int x, int y, int width, int height, int id) {
+        this.lobby = lobby;
+        this.container = container;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -62,10 +73,21 @@ public class PlayerPanel {
     }
 
     private void createPlayerName() {
-        playerLabel = new Label(name);
         double x = this.x + playerIcon.getWidth() + 20;
-        double y = this.y + ((height - playerLabel.getHeight()) / 2);
-        playerLabel.setPosition((int)x, (int)y);
+        double y = this.y + ((height - 20) / 2);
+        if (playerName == null)
+        playerName = new TextField(container, new Label("").getFont(), (int)x, (int)y, 100, 20);
+        playerName.setBackgroundColor(Color.transparent);
+        playerName.setMaxLength(50);
+        playerName.setBorderColor(Color.transparent);
+        playerName.setTextColor(Color.white);
+        playerName.addListener(e -> sendPlayerNameChange());
+    }
+
+    private void sendPlayerNameChange() {
+        if((!playerName.getText().equals("")) && Keyboard.getEventKey() == Input.KEY_ENTER) {
+            lobby.sendPlayerNameChanged(playerName.getText());
+        }
     }
 
     private void createPlayerIcon() {
@@ -83,7 +105,7 @@ public class PlayerPanel {
 
     public void setPlayerName(String name) {
         this.name = name;
-        createPlayerName();
+        playerName.setText(name);
     }
 
     public void render(Graphics g) {
@@ -109,7 +131,8 @@ public class PlayerPanel {
     }
 
     private void renderPlayerName(Graphics g) {
-        playerLabel.render(g);
+        g.setColor(Color.white);
+        playerName.render(container, g);
     }
 
     private void renderPlayerIcon(Graphics g) {
@@ -123,12 +146,14 @@ public class PlayerPanel {
 
     public void setActivePlayer(boolean activePlayer) {
         this.activePlayer = activePlayer;
+        playerName.setAcceptingInput(true);
     }
 
     public void reset() {
         activePlayer = false;
         hasJoined = false;
         checkbox.reset();
+        playerName.setAcceptingInput(false);
     }
 
     public void setPlayerState(boolean state) {

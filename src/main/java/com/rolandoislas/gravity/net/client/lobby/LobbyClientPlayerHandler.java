@@ -45,10 +45,19 @@ public class LobbyClientPlayerHandler extends ChannelInboundHandlerAdapter {
             case LobbyClientDecoder.CODE_SHUTDOWN :
                 lobby.doError("Host disconnected.", true);
                 break;
+            case LobbyClientDecoder.CODE_NAME :
+                setPlayerName(message);
+                break;
             default :
                 ctx.fireChannelRead(NetUtil.stringToByteBuf(message));
                 break;
         }
+    }
+
+    private void setPlayerName(String message) {
+        int player = Integer.parseInt(message.substring(2, 4));
+        String name = message.substring(6);
+        lobby.setPlayerName(player, name);
     }
 
     private void setSecret(String message) {

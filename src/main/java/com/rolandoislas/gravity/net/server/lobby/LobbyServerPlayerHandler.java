@@ -52,6 +52,7 @@ public class LobbyServerPlayerHandler extends ChannelInboundHandlerAdapter {
             players.get(player - 1).put("status", false);
             players.get(player - 1).put("channel", null);
             players.get(player - 1).put("secret", null);
+            players.get(player - 1).put("name", null);
             recipients.remove(ctx.channel());
             sendStateChangeMessage(player, 0);
             sendStatusUpdateMessage(player, 0);
@@ -91,9 +92,24 @@ public class LobbyServerPlayerHandler extends ChannelInboundHandlerAdapter {
             case LobbyServerDecoder.CODE_SHUTDOWN :
                 sendMessage(LobbyClientDecoder.CODE_SHUTDOWN);
                 break;
+            case LobbyServerDecoder.CODE_NAME :
+                setPlayerName(ctx, message);
+                break;
             default :
                 ctx.fireChannelRead(NetUtil.stringToByteBuf(message));
                 break;
+        }
+    }
+
+    private void setPlayerName(ChannelHandlerContext ctx, String message) {
+        String name = message.substring(4);
+        String nameLength = String.format("%02d", name.length());
+        try {
+            int player = getPlayerFromCurrentChannel(ctx);
+            players.get(player - 1).put("name", name);
+            sendMessage(LobbyClientDecoder.CODE_NAME + "0" + player + nameLength + name);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -251,5 +267,4 @@ public class LobbyServerPlayerHandler extends ChannelInboundHandlerAdapter {
         cause.printStackTrace();
         ctx.close();
     }
-
 }

@@ -69,17 +69,17 @@ public class MultiplayerLobby extends BasicGameState {
     public void init(GameContainer container, StateBasedGame game) throws SlickException {
         createSidebarPanel(game);
         createChatPanel();
-        createPlayerListPanel();
+        createPlayerListPanel(container);
     }
 
-    private void createPlayerListPanel() {
+    private void createPlayerListPanel(GameContainer container) {
         playerListPanel = new Rectangle(0, 0, Main.getWidth() - sidebarWidth, Main.getHeight() - chatboxHeight);
         int x = 10;
         int y = 10;
         for(int i = 0; i < 4; i++) {
             int playerPanelHeight = 100;
             y = y + ((i==0) ? 0 : playerPanelHeight + 10);
-            PlayerPanel playerInfoPanel = new PlayerPanel(x, y, playerPanelWidth, playerPanelHeight, i + 1);
+            PlayerPanel playerInfoPanel = new PlayerPanel(this, container, x, y, playerPanelWidth, playerPanelHeight, i + 1);
             playerInfoPanel.setPlayerName("Player " + (i + 1));
             playerList.add(playerInfoPanel);
         }
@@ -227,8 +227,11 @@ public class MultiplayerLobby extends BasicGameState {
     }
 
     private void resetPlayerPanels() {
+        int index = 0;
         for (PlayerPanel panel : playerList) {
             panel.reset();
+            panel.setPlayerName("Player " + (index + 1));
+            index++;
         }
     }
 
@@ -247,7 +250,7 @@ public class MultiplayerLobby extends BasicGameState {
 
     private void addCheckboxListener(int player) {
         playerList.get(player - 1).getCheckbox().addClickAction(e ->
-                sendStatusUpdate(Boolean.parseBoolean(e.getActionCommand()))
+                        sendStatusUpdate(Boolean.parseBoolean(e.getActionCommand()))
         );
     }
 
@@ -294,4 +297,13 @@ public class MultiplayerLobby extends BasicGameState {
 		    ((MainMenu)game.getState(Main.STATE_ID.MAIN_MENU.id)).setError(message);
 		game.enterState(Main.STATE_ID.MAIN_MENU.id);
 	}
+
+    public void setPlayerName(int player, String name) {
+        this.playerList.get(player - 1).setPlayerName(name);
+    }
+
+    public void sendPlayerNameChanged(String name) {
+        String nameLength = String.format("%02d", name.length());
+        lobbyClient.sendMessage(LobbyServerDecoder.CODE_NAME + nameLength + name);
+    }
 }

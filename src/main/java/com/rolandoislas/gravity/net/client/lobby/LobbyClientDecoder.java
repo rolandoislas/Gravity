@@ -1,5 +1,6 @@
 package com.rolandoislas.gravity.net.client.lobby;
 
+import com.rolandoislas.gravity.net.common.NetUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -18,6 +19,7 @@ public class LobbyClientDecoder extends ByteToMessageDecoder {
     public static final String CODE_GAME_START = "05";
     public static final String CODE_SECRET = "06";
     public static final String CODE_SHUTDOWN = "07";
+    public static final String CODE_NAME = "08";
 
     private boolean runCheck = true;
     private int bytesOut;
@@ -62,10 +64,26 @@ public class LobbyClientDecoder extends ByteToMessageDecoder {
             case CODE_SECRET :
                 bytesOut = 12;
                 break;
+            case CODE_NAME :
+                if(in.readableBytes() < 6) {
+                    runCheck = true;
+                } else {
+                    checkNameMessageEnd(copy);
+                }
+                break;
             default :
                 bytesOut = in.readableBytes();
                 break;
         }
+    }
+
+    private void checkNameMessageEnd(ByteBuf message) {
+        int messageLength = Integer.parseInt(NetUtil.byteBufToString(message.copy()).substring(2, 4));
+        if(message.readableBytes() == messageLength + 4) {
+            bytesOut = messageLength + 6;
+            runCheck = false;
+        }
+        runCheck = true;
     }
 
 }
