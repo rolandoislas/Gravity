@@ -3,18 +3,9 @@ Gravity
 
 Gravity is a work in progress game about escaping from a black hole.
 
-# Download
-
-[Release](http:///data.rolandoislas.com/gravity/release/Gravity.jar)
-[Dev](http:///data.rolandoislas.com/gravity/release/Gravity-dev.jar)
-
 Requires Java 8 or greater.
 
 Port 48051 must be forwarded for multiplayer support.
-
-# Screenshots
-
-[Gameboard](http://data.rolandoislas.com/gravity/image/screenshot/gameboard.png)
 
 # How to Play
 
